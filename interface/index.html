@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Gateway tester</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script type="text/javascript" src="scripts.js" ></script>
+</head>
+<body onload="init()">
+  <div class="wrapper">
+    <div class="navigation">
+      <input type="button" class="navigation_btn" id="get_items_btn" value="Get items">
+      <input type="button" class="navigation_btn" id="get_item_by_id_btn" value="Get item by id">
+      <input type="button" class="navigation_btn" id="create_item_btn" value="Create item">
+      <input type="button" class="navigation_btn" id="add_existing_items_btn" value="Add existing items">
+      <input type="button" class="navigation_btn" id="get_orders_btn" value="Get orders">
+      <input type="button" class="navigation_btn" id="get_order_by_id_btn" value="Get order by id">
+      <input type="button" class="navigation_btn" id="create_order_btn" value="Create order">
+      <input type="button" class="navigation_btn" id="add_item_to_order_btn" value="Add item to order">
+      <input type="button" class="navigation_btn" id="perform_payment_btn" value="Perform payment">
+      <input type="button" class="navigation_btn" id="change_order_statust_btn" value="Change order status">
+    </div>
+    <div class="forms">
+      <form id="get_items" class="api_form" method="GET">
+        <span class='form_title'></span>
+        <input type="submit" name="submit" value="Send">
+      </form>
+      <form id="get_item_by_id" class="api_form" method="GET">
+        <span class='form_title'></span>
+        <input type="text" class="input_text" name="id" placeholder="id" required>
+        <input type="submit" name="submit" value="Send">
+      </form>
+      <form id="create_item" class="api_form" method="POST">
+        <span class='form_title'></span>
+        <input type="text" class="input_text" name="name" placeholder="name" required>
+        <input type="text" class="input_text" name="amount" placeholder="amount" required>
+        <input type="text" class="input_text" name="price" placeholder="price" required>
+        <input type="submit" name="submit" value="Send">
+      </form>
+      <form id="add_existing_items" class="api_form" method="PUT">
+        <span class='form_title'></span>
+        <input type="text" class="input_text" name="id" placeholder="id" required>
+        <input type="text" class="input_text" name="amount" placeholder="amount" required>
+        <input type="submit" name="submit" value="Send">
+      </form>
+      <form id="get_orders" class="api_form" method="GET">
+        <span class='form_title'></span>
+        <input type="submit" name="submit" value="Send">
+      </form>
+      <form id="get_order_by_id" class="api_form" method="GET">
+        <span class='form_title'></span>
+        <input type="text" class="input_text" name="id" placeholder="id" required>
+        <input type="submit" name="submit" value="Send">
+      </form>
+      <form id="create_order" class="api_form" method="POST">
+        <span class='form_title'></span>
+        <input type="text" class="input_text" name="username" placeholder="username" required>
+        <input type="submit" name="submit" value="Send">
+      </form>
+      <form id="add_item_to_order" class="api_form" method="POST">
+        <span class='form_title'></span>
+        <input type="text" class="input_text" name="order_id" placeholder="order_id" required>
+        <input type="text" class="input_text" name="item_id" placeholder="item_id" required>
+        <input type="text" class="input_text" name="amount" placeholder="amount" required>
+        <input type="text" class="input_text" name="username" placeholder="username" required>
+        <input type="submit" name="submit" value="Send">
+      </form>
+      <form id="perform_payment" class="api_form" method="PUT">
+        <span class='form_title'></span>
+        <input type="text" class="input_text" name="id" placeholder="id" required>
+        <input type="text" class="input_text" name="username" placeholder="username" required>
+        <span>AUTHORIZED <input id="checkbox" type="checkbox" name="auth"></span>
+        <input type="submit" name="submit" value="Send">
+      </form>
+      <form id="change_order_statust" class="api_form" method="PUT">
+        <span class='form_title'></span>
+        <input list="statuslist" id="status" class="input_text" required>
+        <datalist id="statuslist">
+         <option>COLLECTING</option>
+         <option>PAYED</option>
+         <option>SHIPPING</option>
+         <option>COMPLETE</option>
+         <option>FAILED</option>
+         <option>CANCELLED</option>
+        </datalist>
+        <input type="text" class="input_text" name="id" placeholder="id" required>
+        <input type="submit" name="submit" value="Send">
+      </form>
+    </div>
+    <textarea name="output" id="output" readonly></textarea>
+  </div>
+
+</body>
+</html>
