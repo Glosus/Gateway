@@ -19,11 +19,15 @@ app.use(cors())
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(function timeLog(req, res, next) {
+  //console.log('Time: ', Date.now());
+  next();
+});
+
 const servers = {
   itemService: [
-    'http://localhost:8001',
-    'http://localhost:8002',
-    'http://185.251.91.187:1824'
+    'http://185.251.91.187:1824',
+      'http://localhost:8001'
   ],
   orderService : [
     'http://185.251.91.187:1809'
@@ -34,10 +38,10 @@ const servers = {
   ]
 }
 
-let itemService = resilient({ service: { basePath: '', servers: servers.itemService, timeout: 1000 }})//Ilya
-let orderService = resilient({ service: { basePath: '', servers: servers.orderService, timeout: 1000 }}) //Polina
-let paymentService = resilient({ service: { basePath: '', servers: servers.paymentService, timeout: 1000 }}) //Dima
-
+let itemService = resilient({ service: { basePath: '', servers: servers.itemService, timeout: 5000 }})//Ilya
+let orderService = resilient({ service: { basePath: '', servers: servers.orderService, timeout: 5000 }}) //Polina
+let paymentService = resilient({ service: { basePath: '', servers: servers.paymentService, timeout: 5000 }}) //Dima
+//
 const items = express.Router();
 const orders = express.Router();
 const payment = express.Router();
@@ -52,6 +56,7 @@ items.get('', async (req, res) => {
         res.send(result.data)
       }
     }).catch(function (err) {
+      console.log(err)
       circuitBreaker.req_error(req.originalUrl);
       res.send({ cod : 504 })
     })
@@ -66,6 +71,7 @@ items.get('/:item_id', async (req, res) => {
         res.send(result.data)
       }
     }).catch(function (err) {
+      console.log(err)
       circuitBreaker.req_error(req.originalUrl);
       res.send({ cod : 504 })
     })
@@ -80,6 +86,7 @@ items.post('', async (req, res) => {
         res.send(result.data)
       }
     }).catch(function (err) {
+      console.log(err)
       circuitBreaker.req_error(req.originalUrl);
       res.send({ cod : 504 })
     })
@@ -94,6 +101,7 @@ items.put('/:id/addition/:amount', async (req, res) => {
         res.send(result.data)
       }
     }).catch(function (err) {
+      console.log(err)
       circuitBreaker.req_error(req.originalUrl);
       res.send({ cod : 504 })
     })
@@ -102,19 +110,21 @@ items.put('/:id/addition/:amount', async (req, res) => {
 
 orders.get('', async (req, res) => {
   if (circuitBreaker.is_ok(req.originalUrl)) {
+    console.log(req.originalUrl);
     orderService.get(req.originalUrl).then(function (result) {
       if (result.status === 200) {
         console.log('Success:', result.data)
         res.send(result.data)
       }
     }).catch(function (err) {
+      console.log(err)
       circuitBreaker.req_error(req.originalUrl);
       res.send({ cod : 504 })
     })
   } else res.send({ cod : 423 })
 })
 
-orders.get('/:order_id', async (req, res) => {
+orders.get('/:order_id([0-9])', async (req, res) => {
   if (circuitBreaker.is_ok(req.originalUrl)) {
     orderService.get(req.originalUrl).then(function (result) {
       if (result.status === 200) {
@@ -122,6 +132,7 @@ orders.get('/:order_id', async (req, res) => {
         res.send(result.data)
       }
     }).catch(function (err) {
+      console.log(err)
       circuitBreaker.req_error(req.originalUrl);
       res.send({ cod : 504 })
     })
@@ -136,6 +147,7 @@ orders.post('/:username', async (req, res) => {
         res.send(result.data)
       }
     }).catch(function (err) {
+      console.log(err)
       circuitBreaker.req_error(req.originalUrl);
       res.send({ cod : 504 })
     })
@@ -150,6 +162,7 @@ orders.post('/:order_id/item', async (req, res) => {
         res.send(result.data)
       }
     }).catch(function (err) {
+      console.log(err)
       circuitBreaker.req_error(req.originalUrl);
       res.send({ cod : 504 })
     })
@@ -164,6 +177,7 @@ orders.put('/:order_id/status/:status', async (req, res) => {
         res.send(result.data)
       }
     }).catch(function (err) {
+      console.log(err)
       circuitBreaker.req_error(req.originalUrl);
       res.send({ cod : 504 })
     })
@@ -178,6 +192,37 @@ payment.put('/:order_id/payment', async (req, res) => {
         res.send(result.data)
       }
     }).catch(function (err) {
+      console.log(err)
+      circuitBreaker.req_error(req.originalUrl);
+      res.send({ cod : 504 })
+    })
+  } else res.send({ cod : 423 })
+})
+
+orders.get('/allnames', async (req, res) => {
+  let time =Date.now();
+  if (circuitBreaker.is_ok(req.originalUrl)) {
+    await orderService.get('/api/orders').then(async function (result) {
+      if (result.status === 200) {
+        let array_id = [];
+        for (let order of JSON.parse(result.data)) {
+          for (let item of order.items){
+            array_id.push(item.id);
+          }
+        }
+        let set_id = Array.from(new Set(array_id))
+        let set_names = [];
+        for (let i = 0; i < set_id.length; i++){
+          await itemService.get('/api/warehouse/items/' + set_id[i]).then(async function (result) {
+            if (result.status === 200) {
+              set_names.push({ id: set_id[i], name: JSON.parse(result.data).name})
+            }
+          })
+        }
+        res.send(set_names)
+      }
+    }).catch(function (err) {
+      console.log(err)
       circuitBreaker.req_error(req.originalUrl);
       res.send({ cod : 504 })
     })

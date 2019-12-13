@@ -1,5 +1,6 @@
 //const gateway = 'http://185.251.91.187:3030'
 const gateway = 'http://localhost:8000'
+//const gateway = 'http://185.251.91.187:8000'
 
 const init = () => {
   const output = document.getElementById('output')
@@ -137,6 +138,14 @@ const init = () => {
     const id = event.target['id'].value;
     const status = event.target['status'].value;
     const gatewayFetch = await fetch(gateway + '/api/orders/' + id + '/status/' + status, { method: 'PUT' });
+    const result = await gatewayFetch.json();
+    output.innerHTML = JSON.stringify(result,undefined, 2);
+  })
+
+  document.getElementById('get_order_item_names').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    output.innerHTML = '';
+    const gatewayFetch = await fetch(gateway + '/api/orders/allnames', { method: 'GET' });
     const result = await gatewayFetch.json();
     output.innerHTML = JSON.stringify(result,undefined, 2);
   })

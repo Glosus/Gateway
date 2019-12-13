@@ -19,6 +19,7 @@
       <input type="button" class="navigation_btn" id="add_item_to_order_btn" value="Add item to order">
       <input type="button" class="navigation_btn" id="perform_payment_btn" value="Perform payment">
       <input type="button" class="navigation_btn" id="change_order_statust_btn" value="Change order status">
+      <input type="button" class="navigation_btn" id="get_order_item_names_btn" value="Get order item names">
     </div>
     <div class="forms">
       <form id="get_items" class="api_form" method="GET">
@@ -84,6 +85,10 @@
          <option>CANCELLED</option>
         </datalist>
         <input type="text" class="input_text" name="id" placeholder="id" required>
+        <input type="submit" name="submit" value="Send">
+      </form>
+      <form id="get_order_item_names" class="api_form" method="GET">
+        <span class='form_title'></span>
         <input type="submit" name="submit" value="Send">
       </form>
     </div>
