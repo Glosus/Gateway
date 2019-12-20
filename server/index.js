@@ -26,15 +26,13 @@ app.use(function timeLog(req, res, next) {
 
 const servers = {
   itemService: [
-    'http://185.251.91.187:1824',
-      'http://localhost:8001'
+    'http://item-service:1824'
   ],
   orderService : [
-    'http://185.251.91.187:1809'
+    'http://order-service:1809'
   ],
   paymentService : [
-    'http://185.251.91.187:1810',
-    'http://185.251.91.187:1811'
+    'http://payment-service:1810'
   ]
 }
 
